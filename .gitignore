@@ -49,3 +49,6 @@ results/
 # IDE specific files
 .vscode/
 .idea/ 
+
+#3 Virtual env
+rasa_venv/
