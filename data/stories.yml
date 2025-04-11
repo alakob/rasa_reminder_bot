@@ -1,0 +1,191 @@
+version: "3.1"
+
+stories:
+- story: happy path
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_great
+  - action: utter_happy
+  - intent: goodbye
+  - action: utter_goodbye
+
+- story: sad path 1
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_unhappy
+  - action: utter_cheer_up
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
+  - intent: goodbye
+  - action: utter_goodbye
+
+- story: sad path 2
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_unhappy
+  - action: utter_cheer_up
+  - action: utter_did_that_help
+  - intent: deny
+  - action: utter_goodbye
+
+- story: direct set reminder
+  steps:
+    - intent: ask_reminder
+    - action: reminder_form
+    - active_loop: reminder_form
+
+- story: list reminders flow
+  steps:
+    - intent: list_reminders
+    - action: action_list_reminders
+
+- story: what can you do
+  steps:
+    - intent: help
+    - action: utter_help
+
+- story: Set reminder happy path
+  steps:
+    - intent: ask_reminder
+    - action: reminder_form
+    - active_loop: reminder_form
+    - slot_was_set:
+        - requested_slot: task
+    - intent: provide_task
+      entities:
+        - task: "team meeting"
+    - slot_was_set:
+        - task: "team meeting"
+    - slot_was_set:
+        - requested_slot: date
+    - intent: provide_date
+      entities:
+        - date: "tomorrow"
+    - slot_was_set:
+        - date: "tomorrow"
+    - slot_was_set:
+        - requested_slot: time
+    - intent: provide_time
+      entities:
+        - time: "10:00"
+    - slot_was_set:
+        - time: "10:00"
+    - slot_was_set:
+        - requested_slot: time_zone
+    - intent: provide_timezone
+      entities:
+        - time_zone: "UTC"
+    - slot_was_set:
+        - time_zone: "UTC"
+    - slot_was_set:
+        - requested_slot: null
+    - active_loop: null
+    - action: action_set_reminder
+    - action: utter_confirm_reminder
+    - intent: affirm
+    - action: utter_reminder_set
+
+- story: Set reminder with rejection
+  steps:
+    - intent: ask_reminder
+    - action: reminder_form
+    - active_loop: reminder_form
+    - slot_was_set:
+        - requested_slot: task
+    - intent: provide_task
+      entities:
+        - task: "team meeting"
+    - slot_was_set:
+        - task: "team meeting"
+    - slot_was_set:
+        - requested_slot: date
+    - intent: provide_date
+      entities:
+        - date: "tomorrow"
+    - slot_was_set:
+        - date: "tomorrow"
+    - slot_was_set:
+        - requested_slot: time
+    - intent: provide_time
+      entities:
+        - time: "10:00"
+    - slot_was_set:
+        - time: "10:00"
+    - slot_was_set:
+        - requested_slot: time_zone
+    - intent: provide_timezone
+      entities:
+        - time_zone: "UTC"
+    - slot_was_set:
+        - time_zone: "UTC"
+    - slot_was_set:
+        - requested_slot: null
+    - active_loop: null
+    - action: action_set_reminder
+    - action: utter_confirm_reminder
+    - intent: deny
+    - action: reminder_form
+    - active_loop: reminder_form
+
+- story: Delete reminder - not found
+  steps:
+    - intent: delete_reminder
+    - action: utter_ask_which_reminder_delete
+    - intent: provide_reminder_id
+      entities:
+        - reminder_id: "999"
+    - action: action_delete_reminder
+    - action: utter_reminder_not_found
+
+- story: Interactive help
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: help
+    - action: utter_help
+    - intent: ask_reminder
+    - action: reminder_form
+    - active_loop: reminder_form
+
+- story: interrupt reminder form with help
+  steps:
+    - intent: ask_reminder
+    - action: reminder_form
+    - active_loop: reminder_form
+    - intent: help
+    - action: utter_help
+    - action: action_listen
+
+- story: interrupt reminder form with list
+  steps:
+    - intent: ask_reminder
+    - action: reminder_form
+    - active_loop: reminder_form
+    - intent: list_reminders
+    - action: action_list_reminders
+    - action: action_listen
+
+- story: interrupt reminder form with goodbye
+  steps:
+    - intent: ask_reminder
+    - action: reminder_form
+    - active_loop: reminder_form
+    - intent: goodbye
+    - action: utter_goodbye
+    - action: action_deactivate_loop
+    - active_loop: null
+    - action: action_listen
+
+- story: Delete reminder - success
+  steps:
+    - intent: delete_reminder
+    - action: utter_ask_which_reminder_delete
+    - intent: provide_reminder_id
+      entities:
+        - reminder_id: "123" # Assume this ID exists
+    - action: action_delete_reminder # This action should check and find the ID
+    - action: utter_reminder_deleted 

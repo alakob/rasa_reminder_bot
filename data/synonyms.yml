@@ -1,0 +1,155 @@
+version: "3.1"
+
+nlu:
+  - synonym: US/Eastern
+    examples: |
+      - EST
+      - Eastern Time
+      - Eastern Standard Time
+      - Eastern Daylight Time
+      - EDT
+      - Eastern
+      - East Coast Time
+      - East Coast
+      - ET
+      - Eastern US
+
+  - synonym: US/Pacific
+    examples: |
+      - PST
+      - Pacific Time
+      - Pacific Standard Time
+      - Pacific Daylight Time
+      - PDT
+      - Pacific
+      - West Coast Time
+      - West Coast
+      - PT
+      - Pacific US
+
+  - synonym: US/Central
+    examples: |
+      - CST
+      - Central Time
+      - Central Standard Time
+      - Central Daylight Time
+      - CDT
+      - Central
+      - CT
+      - Central US
+
+  - synonym: US/Mountain
+    examples: |
+      - MST
+      - Mountain Time
+      - Mountain Standard Time
+      - Mountain Daylight Time
+      - MDT
+      - Mountain
+      - MT
+      - Mountain US
+
+  - synonym: UTC
+    examples: |
+      - GMT
+      - Greenwich Mean Time
+      - Coordinated Universal Time
+      - Zulu Time
+      - Z
+      - UTC+0
+      - GMT+0
+
+  - synonym: Europe/London
+    examples: |
+      - BST
+      - British Time
+      - British Summer Time
+      - GMT+1
+      - UK Time
+      - London Time
+      - British
+      - England Time
+
+  - synonym: Europe/Paris
+    examples: |
+      - CET
+      - Central European Time
+      - CEST
+      - Central European Summer Time
+      - Europe/Berlin
+      - Europe/Madrid
+      - Europe/Rome
+      - European Time
+      - Continental Europe
+
+  - synonym: Asia/Tokyo
+    examples: |
+      - JST
+      - Japan Time
+      - Japan Standard Time
+      - Tokyo Time
+      - Japanese Time
+
+  - synonym: Asia/Kolkata
+    examples: |
+      - IST
+      - Indian Time
+      - India Standard Time
+      - Kolkata Time
+      - Indian 
+      - India Time Zone
+
+  - synonym: today
+    examples: |
+      - today
+      - this day
+      - current day
+      - now
+      - same day
+
+  - synonym: tomorrow
+    examples: |
+      - tomorrow
+      - next day
+      - following day
+      - day after today
+      - +1 day
+      - +1d
+
+  - synonym: next_week
+    examples: |
+      - next week
+      - upcoming week
+      - following week
+      - week after this
+      - +1 week
+      - +1w
+      - in a week
+
+  - synonym: next_month
+    examples: |
+      - next month
+      - upcoming month
+      - following month
+      - month after this
+      - +1 month
+      - +1m
+      - in a month
+
+  - synonym: next_year
+    examples: |
+      - next year
+      - upcoming year
+      - following year
+      - year after this
+      - +1 year
+      - +1y
+      - in a year
+
+  - synonym: weekend
+    examples: |
+      - weekend
+      - this weekend
+      - coming weekend
+      - Saturday and Sunday
+      - next weekend 

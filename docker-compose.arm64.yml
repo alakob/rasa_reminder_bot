@@ -1,0 +1,53 @@
+services:
+  rasa:
+    build:
+      context: .
+      dockerfile: Dockerfile.arm64
+    volumes:
+      - ./:/app
+    ports:
+      - "5005:5005"
+    command: 
+      - run
+      - --enable-api
+      - --cors
+      - "*"
+      - --debug
+      - --endpoints
+      - endpoints.yml
+      - --credentials
+      - credentials.yml
+    environment:
+      - RASA_TELEMETRY_ENABLED=false
+      - SENTRY_DSN=
+      - RASA_ACTIONS_URL=http://action-server:5055/webhook
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    platform: linux/arm64
+
+  action-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.action-server.arm64
+    volumes:
+      - ./actions:/app/actions
+    ports:
+      - "5055:5055"
+    command: ["start", "--actions", "actions"]
+    platform: linux/arm64
+
+  postgres:
+    image: postgres:14
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: rasa
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: rasa_db
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    platform: linux/arm64
+
+volumes:
+  pg_data: 

@@ -1,0 +1,65 @@
+version: '3.7'
+
+services:
+  rasa:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    volumes:
+      - ./models:/app/models
+    ports:
+      - "5005:5005"
+    environment:
+      - RASA_MODEL_NAME=${RASA_MODEL_NAME:-20250411-160318-genteel-soul.tar.gz}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://user:password@db:5432/database}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+    command: >
+      rasa run
+        --enable-api
+        --cors "*"
+        --debug
+        -m models/${RASA_MODEL_NAME}
+        --endpoints endpoints.yml
+        --credentials credentials.yml
+        # --log-file out.log # Commented out to see logs via docker logs
+    depends_on:
+      - action_server
+      - db
+
+  action_server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    volumes:
+      - ./actions:/app/actions
+    ports:
+      - "5055:5055"
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgresql://user:password@db:5432/database}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+    command: >
+      rasa run actions --debug
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-database}
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+volumes:
+  postgres_data: 

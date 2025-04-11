@@ -1,0 +1,30 @@
+FROM python:3.10-slim-bullseye
+
+WORKDIR /app
+
+# Install only essential system dependencies
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Rasa SDK directly without virtual environment
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir 'rasa-sdk==3.5.1' 'sqlalchemy<2.0'
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+
+# Create actions directory
+RUN mkdir -p /app/actions
+
+# Copy only necessary files
+COPY ./actions /app/actions/
+
+# Set up a non-root user
+RUN groupadd -r rasa && useradd -r -g rasa rasa && \
+    chown -R rasa:rasa /app
+USER rasa
+
+# Default command
+CMD ["python", "-m", "rasa_sdk", "--actions", "actions"] 

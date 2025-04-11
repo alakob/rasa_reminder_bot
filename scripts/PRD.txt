@@ -1,0 +1,296 @@
+---
+
+# **Product Requirements Document (PRD)**  
+**Project Name**: Productivity Assistant Chatbot  
+**Version**: 1.1  
+**Author**: [Your Name]  
+**Last Updated**: [Date]  
+
+---
+
+## **1. Overview**  
+### **Objective**  
+Develop a **Dockerized Rasa chatbot** designed to assist users in managing tasks, setting reminders, and answering productivity-related questions. The chatbot will:  
+- Utilize **PostgreSQL** for persistent data storage.  
+- Integrate **Twilio SMS** for sending reminders.  
+- Adhere to **Dev/Test/Prod** environment best practices.  
+- Leverage all **Rasa fundamentals**, including NLU, dialogue management, forms, custom actions, and policies.  
+
+### **Key Features**  
+- ✅ **Task Management**: Create, view, and delete reminders.  
+- ✅ **FAQ Responses**: Provide predefined answers to common productivity questions.  
+- ✅ **Multi-Channel Support**: Operate seamlessly across CLI, Slack, and WhatsApp via Twilio.  
+- ✅ **Database Persistence**: Store data in PostgreSQL.  
+- ✅ **Dockerized Deployment**: Ensure consistency across Dev/Test/Prod environments.  
+- ✅ **User Authentication & Session Management**: Securely identify and manage users.  
+- ✅ **Time Zone Handling**: Support reminders tailored to users’ local time zones.  
+
+---
+
+## **2. Technical Scope**  
+### **Core Components**  
+| **Component**         | **Technology**      | **Purpose**                        |  
+|-----------------------|---------------------|------------------------------------|  
+| **Chatbot Framework** | Rasa Open Source    | Handle NLP and dialogue management |  
+| **Database**          | PostgreSQL          | Store reminders, user data, and preferences |  
+| **SMS Notifications** | Twilio API          | Deliver reminder notifications     |  
+| **Containerization**  | Docker + Docker Compose | Ensure environment consistency |  
+| **CI/CD** (Optional)  | GitHub Actions      | Automate testing and deployment   |  
+
+---
+
+## **3. Functional Requirements**  
+### **3.1 Natural Language Understanding (NLU)**  
+- **Intents**:  
+  ```yaml
+  - intent: ask_reminder  
+    examples:  
+      - "Remind me to [call mom](task) at [5 PM](time)"  
+      - "Set a reminder for [meeting](task) tomorrow at [10 AM](time)"  
+  - intent: list_reminders  
+    examples:  
+      - "What are my pending tasks?"  
+      - "Show me my reminders"  
+  - intent: delete_reminder  
+    examples:  
+      - "Delete my [meeting](task) reminder"  
+      - "Cancel the [call mom](task) reminder"  
+  ```
+- **Entities**: `task`, `time`, `date`, `time_zone`  
+- **Synonyms**:  
+  - "tomorrow" → `2024-04-10` (example date)  
+  - "EST" → `America/New_York`  
+
+### **3.2 Dialogue Management**  
+- **Stories**:  
+  ```yaml
+  - story: Set a reminder  
+    steps:  
+      - intent: ask_reminder  
+      - action: reminder_form  
+      - active_loop: reminder_form  
+      - slot_was_set:  
+          - task: "call mom"  
+          - time: "17:00"  
+          - time_zone: "America/New_York"  
+      - active_loop: null  
+      - action: action_save_reminder  
+  ```
+- **Rules**:  
+  ```yaml
+  - rule: Answer FAQ  
+    steps:  
+      - intent: ask_faq  
+      - action: utter_faq_response  
+  ```
+
+### **3.3 User Authentication & Session Management**  
+- **User Identification**:  
+  - **CLI**: Assign a unique user ID or session token during initialization.  
+  - **Slack**: Use Slack user IDs provided by the Slack API.  
+  - **WhatsApp**: Identify users via phone numbers from Twilio.  
+- **Session Persistence**:  
+  - Store session data in PostgreSQL, linking it to a unique user identifier (e.g., user ID, phone number).  
+  - Maintain context across channels by associating all interactions with the same user ID.  
+- **Data Security**:  
+  - Encrypt sensitive data (e.g., phone numbers) in the database using AES-256.  
+  - Ensure compliance with privacy regulations such as GDPR or CCPA.  
+
+### **3.4 Multi-Channel Support**  
+- **Supported Channels**:  
+  - **CLI**: Local command-line interface for development and testing.  
+  - **Slack**: Integrate via Slack’s Bot User OAuth Token and Events API.  
+  - **WhatsApp**: Connect through Twilio’s WhatsApp API for messaging.  
+- **Cross-Channel User Recognition**:  
+  - Use a central user ID stored in PostgreSQL to map identities across channels.  
+  - Provide a command (e.g., `/link_accounts`) for users to connect their Slack and WhatsApp profiles.  
+
+### **3.5 Time Zone Handling**  
+- **Detection**:  
+  - Prompt users to specify their time zone during onboarding (e.g., "What’s your time zone?") or when setting their first reminder.  
+  - Optionally, infer time zones from geolocation data (if available via WhatsApp or Slack).  
+- **Storage**:  
+  - Store each user’s time zone preference in the `users` table in PostgreSQL.  
+- **Reminder Scheduling**:  
+  - Convert all reminder times to UTC for internal storage, using the user’s time zone for conversion.  
+  - Display reminders in the user’s local time when confirming or notifying.  
+
+### **3.6 Backend (Custom Actions)**  
+- **PostgreSQL Integration**:  
+  ```python
+  import psycopg2
+  from datetime import datetime
+  import pytz
+  import os
+
+  def save_reminder(task, time, time_zone, user_id):
+      conn = psycopg2.connect(os.getenv("DB_URL"))
+      cursor = conn.cursor()
+      local_time = datetime.strptime(time, "%H:%M").replace(tzinfo=pytz.timezone(time_zone))
+      utc_time = local_time.astimezone(pytz.utc)
+      cursor.execute(
+          "INSERT INTO reminders (task, time, time_zone, user_id) VALUES (%s, %s, %s, %s)",
+          (task, utc_time, time_zone, user_id)
+      )
+      conn.commit()
+      conn.close()
+  ```
+- **Twilio SMS Action**:  
+  ```python
+  from twilio.rest import Client
+  import os
+
+  def send_reminder(task, time, time_zone, user_phone):
+      client = Client(os.getenv("TWILIO_SID"), os.getenv("TWILIO_AUTH_TOKEN"))
+      local_time = datetime.strptime(time, "%H:%M").replace(tzinfo=pytz.timezone(time_zone))
+      message = client.messages.create(
+          to=user_phone,
+          from_=os.getenv("TWILIO_PHONE_NUMBER"),
+          body=f"🔔 Reminder: {task} at {local_time.strftime('%H:%M')} ({time_zone})"
+      )
+      return message.sid
+  ```
+
+### **3.7 Policies & Fallbacks**  
+- **Configuration**:  
+  ```yaml
+  policies:
+    - name: RulePolicy
+    - name: TEDPolicy
+      max_history: 5
+    - name: FallbackPolicy
+      nlu_threshold: 0.7
+      core_threshold: 0.7
+      fallback_action_name: "action_default_fallback"
+  ```
+- **Fallback Behavior**: Respond with “I’m not sure I understood that. Could you rephrase?” when confidence is low.
+
+---
+
+## **4. Non-Functional Requirements**  
+### **4.1 Environments**  
+| **Environment** | **Purpose**         | **Database**      | **Twilio**     |  
+|-----------------|---------------------|-------------------|----------------|  
+| **Dev**         | Local development   | Docker PostgreSQL | Sandbox mode   |  
+| **Test**        | Automated testing   | Test DB           | Mock API       |  
+| **Prod**        | Live deployment     | AWS RDS           | Live Twilio    |  
+
+### **4.2 Deployment (Dockerized)**  
+- **Sample `docker-compose.yml`**:  
+  ```yaml
+  version: '3'
+  services:
+    rasa:
+      image: rasa:prod
+      ports:
+        - "5005:5005"
+      env_file: .env.prod
+      depends_on:
+        - postgres
+    postgres:
+      image: postgres:14
+      environment:
+        - POSTGRES_USER=rasa
+        - POSTGRES_PASSWORD=secret
+        - POSTGRES_DB=chatbot
+      volumes:
+        - pg_data:/var/lib/postgresql/data
+  volumes:
+    pg_data:
+  ```
+
+### **4.3 CI/CD (Optional)**  
+- **Benefits**: Automates testing and deployment, ensuring code quality and reducing manual errors.  
+- **Sample Workflow**:  
+  ```yaml
+  name: CI/CD Pipeline
+  on: [push]
+ RT pull_request]
+  jobs:
+    test:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - run: docker-compose -f docker-compose.test.yml up --abort-on-container-exit
+    deploy:
+      needs: test
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - run: kubectl apply -f k8s/prod.yml  # Example for Kubernetes
+  ```
+
+### **4.4 Error Handling & Logging**  
+- **Error Handling**:  
+  - Wrap custom actions in try-catch blocks to gracefully handle database or API failures.  
+  - Use Rasa’s fallback policy for unrecognized intents or low-confidence predictions.  
+- **Logging**:  
+  - Log user interactions and errors to a centralized system (e.g., ELK stack or AWS CloudWatch).  
+  - Anonymize logs to exclude personally identifiable information (PII).  
+
+---
+
+## **5. Milestones & Timeline**  
+| **Phase**     | **Tasks**                              | **Duration** |  
+|---------------|----------------------------------------|--------------|  
+| **Week 1**   | NLU setup + Basic stories              | 3 days       |  
+| **Week 2**   | PostgreSQL + Forms + Time zone handling| 3 days       |  
+| **Week 3**   | Twilio integration + Authentication    | 2 days       |  
+| **Week 4**   | Dockerize + Deploy + Error handling    | 2 days       |  
+
+---
+
+## **6. Risks & Mitigation**  
+| **Risk**                     | **Mitigation**                          |  
+|------------------------------|-----------------------------------------|  
+| Twilio API costs             | Use sandbox mode in Dev/Test            |  
+| PostgreSQL downtime          | Implement backups + AWS RDS failover    |  
+| NLU inaccuracies             | Expand training data + Use Rasa X       |  
+| Time zone misconfigurations  | Default to UTC + Prompt user input      |  
+
+---
+
+## **7. Success Metrics**  
+- 📌 **80%+ Intent Recognition Accuracy**: Measure using Rasa’s NLU evaluation tools (`rasa test nlu`).  
+- 📌 **<2s Response Time**: Test with tools like Locust or JMeter.  
+- 📌 **Zero Downtime in Prod**: Achieve via PostgreSQL replication and monitoring (e.g., AWS CloudWatch).  
+- 📌 **User Satisfaction Score**: Collect via post-interaction surveys (e.g., “How helpful was I? 1-5”).  
+
+---
+
+## **Appendix**  
+### **PostgreSQL Schema**  
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    user_id TEXT UNIQUE NOT NULL,
+    time_zone TEXT DEFAULT 'UTC',
+    phone_number TEXT,
+    slack_id TEXT
+);
+
+CREATE TABLE reminders (
+    id SERIAL PRIMARY KEY,
+    task TEXT NOT NULL,
+    time TIMESTAMP NOT NULL,
+    time_zone TEXT NOT NULL,
+    user_id TEXT REFERENCES users(user_id)
+);
+```
+
+### **Twilio Setup Guide**  
+Refer to [Twilio SMS Documentation](https://www.twilio.com/docs/sms) for setup instructions.  
+
+---
+
+## **Approval**  
+- ✅ **Dev Lead**  
+- ✅ **Product Manager**  
+- ✅ **QA**  
+
+## **Next Steps**  
+1. Set up PostgreSQL and Twilio accounts for development.  
+2. Build and test the MVP in a Dockerized environment.  
+3. Validate in staging before production rollout.  
+
+Would you like a **sample GitHub repository** to kickstart this project? Let me know! 🚀

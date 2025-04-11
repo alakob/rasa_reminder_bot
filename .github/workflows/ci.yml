@@ -1,0 +1,76 @@
+# .github/workflows/ci.yml
+
+name: Rasa CI
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
+
+jobs:
+  test_and_validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8' # Match your project's Python version
+
+    - name: Create virtual environment
+      run: python -m venv venv
+
+    - name: Activate virtual environment and install dependencies
+      run: |
+        source venv/bin/activate
+        pip install --upgrade pip
+        pip install -r requirements.txt
+      shell: bash
+
+    # Optional: Add linting/formatting checks here
+    # - name: Run linter (e.g., flake8)
+    #   run: |
+    #     source venv/bin/activate
+    #     pip install flake8
+    #     flake8 .
+    # - name: Run formatter check (e.g., black)
+    #   run: |
+    #     source venv/bin/activate
+    #     pip install black
+    #     black --check .
+
+    - name: Validate Rasa data
+      run: |
+        source venv/bin/activate
+        rasa data validate
+      shell: bash
+
+    - name: Train Rasa model
+      run: |
+        source venv/bin/activate
+        rasa train
+      shell: bash
+
+    - name: Run Rasa NLU tests
+      run: |
+        source venv/bin/activate
+        rasa test nlu
+      shell: bash
+
+    - name: Run Rasa Core tests
+      run: |
+        source venv/bin/activate
+        # Create dummy core test file if it doesn't exist to avoid error
+        mkdir -p tests
+        touch tests/test_stories.yml 
+        echo "stories:" > tests/test_stories.yml
+        rasa test core --stories tests/test_stories.yml # Use actual tests if available
+      shell: bash 

@@ -1,0 +1,108 @@
+version: "3.1"
+
+nlu:
+  - lookup: task
+    examples: |
+      - meeting
+      - appointment
+      - call
+      - conference
+      - interview
+      - presentation
+      - deadline
+      - project
+      - report
+      - assignment
+      - pickup
+      - delivery
+      - lunch
+      - dinner
+      - breakfast
+      - workout
+      - exercise
+      - medication
+      - doctor
+      - dentist
+      - haircut
+      - shopping
+      - groceries
+      - birthday
+      - anniversary
+      - holiday
+      - vacation
+      - flight
+      - trip
+      - exam
+      - class
+      - lecture
+      - webinar
+      - payment
+      - bill
+      - invoice
+      - subscription
+      - renewal
+      - maintenance
+      - cleaning
+      - laundry
+      - email
+      - message
+      - phone call
+      - text
+      - reservation
+      - booking
+
+  - lookup: common_time_patterns
+    examples: |
+      - \d{1,2}:\d{2}
+      - \d{1,2}:\d{2}\s*[ap]m
+      - \d{1,2}\s*[ap]m
+      - \d{1,2}\s*o'clock
+      - noon
+      - midnight
+      - morning
+      - afternoon
+      - evening
+      - night
+      - \d{1,2}
+      - half past \d{1,2}
+      - quarter past \d{1,2}
+      - quarter to \d{1,2}
+      - \d{1,2}:\d{2}\s*hrs?
+      - \d{2}:\d{2}
+      - \d{2}:\d{2}\s*hours?
+
+  - lookup: common_date_patterns
+    examples: |
+      - today
+      - tomorrow
+      - yesterday
+      - next week
+      - next month
+      - next year
+      - this week
+      - this month
+      - this year
+      - in a day
+      - in \d+ days?
+      - in a week
+      - in \d+ weeks?
+      - in a month
+      - in \d+ months?
+      - \d{1,2}/\d{1,2}/\d{2,4}
+      - \d{1,2}-\d{1,2}-\d{2,4}
+      - \d{4}-\d{1,2}-\d{1,2}
+      - \d{1,2}(?:st|nd|rd|th)? of [A-Za-z]+
+      - [A-Za-z]+ \d{1,2}(?:st|nd|rd|th)?
+      - [A-Za-z]+ \d{1,2}(?:st|nd|rd|th)?,? \d{4}
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+      - Sunday
+      - weekend
+      - next [A-Za-z]+
+      - this [A-Za-z]+
+      - coming [A-Za-z]+
+      - the day after tomorrow 

@@ -1,0 +1,179 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - mood_great
+  - mood_unhappy
+  - bot_challenge
+  - hello
+  - ask_reminder
+  - list_reminders
+  - delete_reminder
+  - ask_faq
+  - provide_task
+  - provide_time
+  - provide_date
+  - provide_timezone
+  - clarify_reminder
+  - out_of_scope
+  - help
+  - restart
+  - provide_reminder_id
+  - nlu_fallback
+
+entities:
+  - task
+  - time
+  - date
+  - time_zone
+  - reminder_id
+
+slots:
+  task:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: task
+  time:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: time
+  date:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: date
+  time_zone:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: time_zone
+  reminder_id:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: reminder_id
+  requested_slot:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: requested_slot
+  reminder_confirmed:
+    type: bool
+    influence_conversation: true
+    mappings:
+    - type: custom
+  last_reminder_id:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: custom
+
+forms:
+  reminder_form:
+    required_slots:
+      - task
+      - date
+      - time
+      - time_zone
+
+responses:
+  utter_greet:
+  - text: "Hello! I'm your reminder bot. How can I help you today?"
+  - text: "Hi there! I can help you manage your reminders. What would you like to do?"
+
+  utter_cheer_up:
+  - text: "Here is something to cheer you up:"
+    image: "https://i.imgur.com/nGF1K8f.jpg"
+
+  utter_did_that_help:
+  - text: "Did that help you?"
+
+  utter_happy:
+  - text: "Great, carry on!"
+
+  utter_goodbye:
+  - text: "Goodbye! Let me know if you need any reminders set."
+  - text: "Bye! I'll make sure to remind you of your tasks."
+
+  utter_iamabot:
+  - text: "I am a reminder bot, powered by Rasa. I can help you set, list, and manage your reminders."
+
+  utter_ask_task:
+  - text: "What would you like me to remind you about?"
+  - text: "Please tell me what task or event you'd like to be reminded of."
+
+  utter_ask_date:
+  - text: "On which date would you like to be reminded? (e.g., tomorrow, next Monday, 2024-04-15)"
+  - text: "What date should I set the reminder for?"
+
+  utter_ask_time:
+  - text: "At what time should I remind you? (e.g., 9am, 14:30, 2pm)"
+  - text: "What time would you like to be reminded?"
+
+  utter_ask_time_zone:
+  - text: "Which timezone are you in? (Default is UTC)"
+  - text: "Please specify your timezone (e.g., EST, PST, UTC)"
+
+  utter_confirm_reminder:
+  - text: "I've set a reminder for {task} on {date} at {time} {time_zone}. Is this correct?"
+
+  utter_reminder_set:
+  - text: "Perfect! Your reminder has been set."
+  - text: "Got it! Your reminder is all set."
+
+  utter_no_reminders:
+  - text: "You don't have any reminders set at the moment. Would you like to set one? Just say 'set a reminder' or 'I need a reminder'."
+  - text: "I don't see any active reminders in your list. I can help you set one - just say 'set a reminder'."
+
+  utter_list_reminders:
+  - text: "Here are your reminders:\n{reminders}"
+
+  utter_ask_which_reminder_delete:
+  - text: "Which reminder would you like to delete? Please provide the reminder ID."
+  - text: "Please specify which reminder to delete by its ID number."
+
+  utter_reminder_deleted:
+  - text: "I've deleted that reminder for you."
+  - text: "Reminder successfully deleted."
+
+  utter_reminder_not_found:
+  - text: "I couldn't find a reminder with that ID."
+  - text: "Sorry, I don't see a reminder matching that ID."
+
+  utter_faq_help:
+  - text: "I can help you set reminders, list your current reminders, or delete reminders you no longer need. Would you like to set a reminder now?"
+
+  utter_help:
+  - text: "I can help you with:\n- Setting new reminders (just say 'set a reminder')\n- Listing your current reminders (say 'list reminders')\n- Deleting reminders (say 'delete reminder')\n\nWould you like to set a reminder now?"
+
+  utter_default:
+  - text: "I'm not sure I understood that. You can say:\n- 'set a reminder'\n- 'list reminders'\n- 'delete reminder'\n- or 'help' for more information"
+  - text: "I didn't quite catch that. Try saying 'set a reminder', 'list reminders', or 'help' for assistance."
+
+  utter_ask_rephrase:
+  - text: "I'm not quite sure what you mean. Try saying:\n- 'set a reminder'\n- 'list reminders'\n- 'delete reminder'\n- or 'help' for more information"
+
+  utter_out_of_scope:
+  - text: "Sorry, I can only help with reminder-related tasks. Try saying 'set a reminder', 'list reminders', or 'help' for assistance."
+  - text: "I'm specialized in managing reminders. Try saying 'set a reminder' or 'help' to see what I can do."
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+
+actions:
+  - validate_reminder_form
+  - action_set_reminder
+  - action_list_reminders
+  - action_delete_reminder 

@@ -1,0 +1,55 @@
+recipe: default.v1
+
+language: en
+
+pipeline:
+- name: WhitespaceTokenizer
+- name: RegexFeaturizer
+- name: LexicalSyntacticFeaturizer
+- name: CountVectorsFeaturizer
+- name: CountVectorsFeaturizer
+  analyzer: "char_wb"
+  min_ngram: 1
+  max_ngram: 4
+- name: DIETClassifier
+  epochs: 100
+  entity_recognition: True
+  constrain_similarities: True
+  model_confidence: softmax
+- name: EntitySynonymMapper
+- name: RegexEntityExtractor
+  case_sensitive: False
+  use_lookup_tables: True
+  use_regexes: True
+- name: ResponseSelector
+  epochs: 100
+  constrain_similarities: True
+- name: FallbackClassifier
+  threshold: 0.7
+  ambiguity_threshold: 0.1
+
+policies:
+- name: RulePolicy
+  core_fallback_threshold: 0.3
+  core_fallback_action_name: "utter_default"
+  enable_fallback_prediction: True
+  priority: 6
+- name: MemoizationPolicy
+  max_history: 5
+  priority: 3
+- name: TEDPolicy
+  max_history: 5
+  epochs: 100
+  constrain_similarities: True
+  model_confidence: softmax
+  priority: 4
+- name: UnexpecTEDIntentPolicy
+  max_history: 5
+  epochs: 100
+  constrain_similarities: True
+  priority: 5
+- name: AugmentedMemoizationPolicy
+  max_history: 5
+  priority: 2
+
+assistant_id: 20250409-233838-rust-photon

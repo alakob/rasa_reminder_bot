@@ -1,0 +1,53 @@
+version: "3.1"
+
+nlu:
+  - regex: time
+    examples: |
+      - ([0-1]?[0-9]|2[0-3]):[0-5][0-9]
+      - ([0-1]?[0-9]|2[0-3]):[0-5][0-9]\s*(am|pm|AM|PM|a\.m\.|p\.m\.)
+      - ([0-1]?[0-9]|2[0-3])(\s*)(am|pm|AM|PM|a\.m\.|p\.m\.)
+      - ([0-1]?[0-9]|2[0-3])(\s*)o'clock
+
+  - regex: date_format_mm_dd_yyyy
+    examples: |
+      - (0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])[-/](19|20)\d\d
+
+  - regex: date_format_dd_mm_yyyy
+    examples: |
+      - (0?[1-9]|[12][0-9]|3[01])[-/](0?[1-9]|1[0-2])[-/](19|20)\d\d
+
+  - regex: date_format_yyyy_mm_dd
+    examples: |
+      - (19|20)\d\d[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])
+
+  - regex: month_name_with_date
+    examples: |
+      - (January|February|March|April|May|June|July|August|September|October|November|December)(\s+)(0?[1-9]|[12][0-9]|3[01])(st|nd|rd|th)?
+
+  - regex: date_with_month_name
+    examples: |
+      - (0?[1-9]|[12][0-9]|3[01])(st|nd|rd|th)?(\s+)(of)?(\s+)?(January|February|March|April|May|June|July|August|September|October|November|December)
+
+  - regex: day_of_week
+    examples: |
+      - (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)
+
+  - regex: relative_day
+    examples: |
+      - (today|tomorrow|yesterday|day after tomorrow)
+
+  - regex: timezone_abbr
+    examples: |
+      - (EST|EDT|CST|CDT|MST|MDT|PST|PDT|GMT|UTC|CET|CEST|IST|JST)
+
+  - regex: timezone_offset
+    examples: |
+      - (UTC|GMT)[+-](0?[0-9]|1[0-2])
+
+  - regex: timezone_name
+    examples: |
+      - (Eastern|Central|Mountain|Pacific|US/Eastern|US/Central|US/Mountain|US/Pacific|Europe/London|Europe/Paris|Asia/Tokyo|Asia/Kolkata)
+
+  - regex: reminder_id
+    examples: |
+      - \b\d+\b 

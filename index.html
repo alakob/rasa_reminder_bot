@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rasa Reminder Bot</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .chat-container {
+            width: 90%;
+            max-width: 500px; /* Limit chat width */
+            height: 80vh; /* Make chat take most of viewport height */
+            max-height: 700px;
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden; /* Needed for chat widget styling */
+            position: relative; /* Needed for widget positioning */
+        }
+        /* Styles for the Rasa Webchat will be injected by the script */
+        /* Placeholder for the widget */
+        #rasa-webchat-container {
+             width: 100%;
+             height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <!-- The Rasa Webchat widget will be injected here -->
+        <div id="rasa-webchat-container"></div>
+    </div>
+
+    <!-- Rasa Webchat script -->
+    <script src="https://cdn.jsdelivr.net/npm/rasa-webchat@1.x.x/lib/index.js" type="application/javascript"></script>
+    <script>
+      window.WebChat.default(
+        {
+          initPayload: "/greet", // Initial message to send to the bot
+          customData: { language: "en" }, // Optional custom data
+          socketUrl: "http://localhost:5005", // URL of your Rasa server Socket.IO endpoint
+          socketPath: "/socket.io/",      // Standard socket.io path
+          title: "Rasa Reminder Bot",       // Title for the chat window
+          subtitle: "How can I help you?", // Subtitle
+          // Add other configuration options here if needed
+          // See: https://github.com/botfront/rasa-webchat
+        },
+        document.querySelector("#rasa-webchat-container") // Where to inject the widget
+      );
+    </script>
+</body>
+</html> 

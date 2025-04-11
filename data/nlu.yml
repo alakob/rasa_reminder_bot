@@ -1,0 +1,339 @@
+version: "3.1"
+
+nlu:
+- intent: greet
+  examples: |
+    - hey
+    - hello
+    - hi
+    - hello there
+    - good morning
+    - good evening
+    - moin
+    - hey there
+    - let's go
+    - hey dude
+    - goodmorning
+    - goodevening
+    - good afternoon
+
+- intent: hello
+  examples: |
+    - hello world
+    - hello bot
+    - testing hello
+    - say hello
+    - just hello
+    - hi there bot
+
+- intent: goodbye
+  examples: |
+    - cu
+    - good by
+    - cee you later
+    - good night
+    - bye
+    - goodbye
+    - have a nice day
+    - see you around
+    - bye bye
+    - see you later
+
+- intent: affirm
+  examples: |
+    - yes
+    - y
+    - indeed
+    - of course
+    - that sounds good
+    - correct
+    - sure
+    - that's right
+    - yes please
+    - definitely
+    - absolutely
+    - I agree
+
+- intent: deny
+  examples: |
+    - no
+    - n
+    - never
+    - I don't think so
+    - don't like that
+    - no way
+    - not really
+    - nope
+    - not now
+    - I disagree
+    - I don't want that
+    - not interested
+
+- intent: mood_great
+  examples: |
+    - perfect
+    - great
+    - amazing
+    - feeling like a king
+    - wonderful
+    - I am feeling very good
+    - I am great
+    - I am amazing
+    - I am going to save the world
+    - super stoked
+    - extremely good
+    - so so perfect
+    - so good
+    - so perfect
+
+- intent: mood_unhappy
+  examples: |
+    - my day was horrible
+    - I am sad
+    - I don't feel very well
+    - I am disappointed
+    - super sad
+    - I'm so sad
+    - sad
+    - very sad
+    - unhappy
+    - not good
+    - not very good
+    - extremely sad
+    - so sad
+
+- intent: bot_challenge
+  examples: |
+    - are you a bot?
+    - are you a human?
+    - am I talking to a bot?
+    - am I talking to a human?
+
+- intent: ask_reminder
+  examples: |
+    - I need a reminder
+    - Set a reminder for me
+    - Can you remind me about something?
+    - I want to set a reminder
+    - Create a reminder
+    - Make a reminder for me
+    - I need to be reminded about something
+    - Set an alert
+    - Can you set a reminder?
+    - I want to be reminded
+    - Add a new reminder
+    - Schedule a reminder
+    - Create an alert for me
+    - Can you help me remember something?
+    - I need to remember to do something
+    - Set an alarm for an event
+    - Add a task reminder
+    - Create a notification for me
+    - Remind me about something important
+    - Need a reminder set up please
+    - help me set a reminder
+    - help me set reminders
+    - help me create a reminder
+    - help with setting a reminder
+    - I need help setting a reminder
+    - show me how to set a reminder
+    - guide me to set a reminder
+    - assist me with creating a reminder
+    - walk me through setting a reminder
+    - how do I set up a reminder
+    - how can I create a reminder
+    - how do I make a new reminder
+    - help me make a reminder
+    - set a reminder
+    - set reminder
+    - create a new reminder
+    - make a new reminder
+    - set up a reminder
+    - setup reminder
+    - new reminder
+    - remind me
+    - set reminders
+
+- intent: provide_task
+  examples: |
+    - Remind me to [take my medication](task)
+    - I need a reminder to [call mom](task)
+    - Set a reminder for [doctor's appointment](task)
+    - Remind me about [team meeting](task)
+    - The task is to [submit the report](task)
+    - It's about [picking up groceries](task)
+    - The reminder is for [walking the dog](task)
+    - I need to [send an email to the client](task)
+    - Set it for [paying the electricity bill](task)
+    - Remind me to [water the plants](task)
+    - It's [taking out the trash](task)
+    - Create a reminder for [gym workout](task)
+    - The event is [dinner with friends](task)
+    - I want to be reminded to [check on the laundry](task)
+    - I need to remember to [book flight tickets](task)
+    - The task is [finishing the project](task)
+    - [Meeting with the boss](task)
+    - [Dentist appointment](task)
+    - [Birthday party](task)
+    - [Pick up kids from school](task)
+
+- intent: provide_time
+  examples: |
+    - at [9:00 am](time)
+    - [3:30 pm](time)
+    - at [15:45](time)
+    - [7 pm](time)
+    - [10:00](time) in the morning
+    - around [noon](time)
+    - [midnight](time)
+    - at [8](time) o'clock
+    - [6:15](time) in the evening
+    - [5:45 am](time)
+    - [quarter past nine](time)
+    - [half past ten](time)
+    - [21:30](time)
+    - at [17:00 hours](time)
+    - [11:20 am](time)
+    - [14:50](time)
+    - [9:05](time) in the morning
+    - [1:20 pm](time)
+    - [22:00](time)
+    - just before [midnight](time)
+
+- intent: provide_date
+  examples: |
+    - on [tomorrow](date)
+    - [next Monday](date)
+    - [May 15th](date)
+    - [next week](date)
+    - [this Friday](date)
+    - [day after tomorrow](date)
+    - [next month](date)
+    - [12/25/2023](date)
+    - [01-15-2024](date)
+    - [today](date)
+    - [December 31st](date)
+    - [2023-06-30](date)
+    - on [Tuesday](date)
+    - [February 14](date)
+    - [next year](date)
+    - [in two days](date)
+    - [in a week](date)
+    - [March 10th](date)
+    - [5th of April](date)
+    - [weekend](date)
+
+- intent: provide_timezone
+  examples: |
+    - [Eastern time](time_zone)
+    - [PST](time_zone)
+    - [UTC](time_zone)
+    - [GMT+1](time_zone)
+    - [Central European Time](time_zone)
+    - My timezone is [EST](time_zone)
+    - I'm in [Pacific time](time_zone)
+    - [JST](time_zone)
+    - [Mountain time](time_zone)
+    - [CET](time_zone)
+    - [IST](time_zone)
+    - [Australian Eastern Time](time_zone)
+    - [GMT](time_zone)
+    - [Eastern Daylight Time](time_zone)
+    - [Central](time_zone)
+    - I'm in the [Japan timezone](time_zone)
+    - [Moscow time](time_zone)
+    - [UTC+8](time_zone)
+    - [British time](time_zone)
+    - [India time zone](time_zone)
+
+- intent: list_reminders
+  examples: |
+    - Show my reminders
+    - What reminders do I have?
+    - List all my reminders
+    - Show me all my reminders
+    - I want to see my reminders
+    - Can you tell me what reminders I have?
+    - Show me my pending reminders
+    - What are my upcoming reminders?
+    - List pending reminders
+    - Show my to-do list
+    - What do I need to remember?
+    - Tell me about my scheduled reminders
+    - I want to check my reminders
+    - Display all my tasks
+    - What have I planned?
+    - Let me see my reminders
+    - Show my scheduled items
+    - What reminders have I set?
+    - I need to see all my reminders
+    - Give me my reminder list
+
+- intent: delete_reminder
+  examples: |
+    - Delete my reminder
+    - Remove a reminder
+    - Cancel the reminder
+    - I want to delete a reminder
+    - Remove the reminder about [meeting](task)
+    - Delete reminder [12](reminder_id)
+    - Cancel my [3 pm](time) reminder
+    - Remove the reminder for [tomorrow](date)
+    - I don't need the reminder anymore
+    - Delete the [doctor appointment](task) reminder
+    - Remove reminder number [5](reminder_id)
+    - Can you delete one of my reminders?
+    - I want to cancel a reminder
+    - Delete the [party](task) reminder 
+    - Remove reminder with ID [8](reminder_id)
+    - Cancel the [Tuesday](date) reminder
+    - Delete my reminder about [grocery shopping](task)
+    - Remove the [7:30](time) reminder
+    - I need to remove a reminder
+    - Delete the [gym](task) reminder please
+
+- intent: clarify_reminder
+  examples: |
+    - The reminder is about [a meeting](task)
+    - I need to be reminded at [3pm](time)
+    - The date is [tomorrow](date)
+    - It's in [Eastern time](time_zone)
+    - The reminder ID is [7](reminder_id)
+    - I'm talking about reminder [3](reminder_id)
+    - The task is [picking up kids](task)
+    - It's scheduled for [next Friday](date)
+    - The time is [9:30 am](time)
+    - I'm in [PST](time_zone) timezone
+    - It's reminder number [12](reminder_id)
+    - I'm referring to the [dentist](task) reminder
+    - The reminder is set for [December 10th](date)
+    - It's the one at [18:45](time)
+    - My timezone is [GMT](time_zone)
+    - I want to modify reminder [4](reminder_id)
+    - The reminder about [taking medication](task)
+    - It's on [Tuesday](date)
+    - The time was [10:15pm](time)
+    - The zone is [UTC+2](time_zone)
+
+- intent: ask_faq
+  examples: |
+    - How does this work?
+    - What can you do?
+    - Help
+    - What are your capabilities?
+    - Tell me what you can do
+    - How do I set a reminder?
+    - How do I delete a reminder?
+    - What commands can I use?
+    - I need help
+    - Can you explain how to use this?
+    - How do I see my reminders?
+    - What should I say to create a reminder?
+    - Give me instructions
+    - Tell me about the reminder app
+    - How do I get started?
+    - What's the proper way to set a reminder?
+    - Show me how to use this
+    - I'm new, can you help?
+    - Tutorial please
+    - How do I interact with you? 
