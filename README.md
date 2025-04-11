@@ -37,7 +37,7 @@ For a more detailed diagram and explanation, see [`docs/diagrams.md`](./docs/dia
 
 1.  **Clone the repository:**
     ```bash
-    git clone <your-repository-url>
+    git clone https://github.com/alakob/rasa_reminder_bot.git
     cd rasa_project
     ```
 2.  **(Optional) Configure Environment Variables:** Create a `.env` file based on `.env.template` (if provided) to customize database credentials, API keys, etc. Currently, defaults are used in `docker-compose.yml`.

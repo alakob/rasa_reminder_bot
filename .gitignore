@@ -1,3 +1,11 @@
+# Cursor
+.cursorrules
+# WindSurf
+.windsurfrules
+
+# cursor
+.cursor/
+
 # Logs
 logs
 *.log
